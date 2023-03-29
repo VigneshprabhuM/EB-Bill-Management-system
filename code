@@ -1,0 +1,573 @@
+package application;
+
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+
+import javafx.application.Application;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
+import javafx.scene.control.PasswordField;
+import javafx.scene.control.TextField;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
+import javafx.scene.text.Text;
+import javafx.stage.Stage;
+
+public class EBillUserManagement extends Application {
+private double billToPay;
+private int unit;
+private final String uname = "admin";
+private final String password = "admin123";
+
+@Override
+public void start(Stage primaryStage) {
+
+VBox root = new VBox();  
+
+Button btn2 = new Button();
+btn2.setText("User");
+btn2.setOnAction(new EventHandler<ActionEvent>() {
+@Override
+public void handle(ActionEvent event1) {
+
+GridPane grid = new GridPane();
+grid.setAlignment(Pos.CENTER);
+grid.setHgap(10);
+grid.setVgap(10);
+grid.setPadding(new Insets(23, 23, 23, 23));
+
+Label unameLabel = new Label("Username:");
+grid.add(unameLabel, 0, 0);
+
+TextField unameField = new TextField();
+grid.add(unameField, 1, 0);
+
+Label passwordLabel = new Label("Password:");
+grid.add(passwordLabel, 0, 1);
+
+PasswordField passwordField = new PasswordField();
+grid.add(passwordField, 1, 1);
+
+Button loginButton = new Button("Login");
+grid.add(loginButton, 1, 2);
+
+loginButton.setOnAction((ActionEvent event) -> {
+String checkUname = unameField.getText();
+String checkPassword = passwordField.getText();
+
+FileWriter fw = null;
+try{    
+String property = System.getProperty("user.home");
+fw=new FileWriter(property+"/Desktop/"+"userNameAndPassword.txt", true);
+
+fw.write("\n\nUser Details:");  
+fw.write("\nName:"+checkUname);
+fw.write("\nPassword:"+checkPassword);
+
+}catch(Exception ex){System.out.println(ex);}
+finally {
+try {
+fw.close();
+} catch (IOException ioex) {
+System.out.println("Exception occurred when closing a file");
+}
+}
+
+callEBUserActions(primaryStage);
+
+});
+
+
+Scene scene = new Scene(grid, 400, 250);
+primaryStage.setScene(scene);
+primaryStage.setTitle("Electricity Bill User Management");
+primaryStage.show();
+
+
+
+}
+});
+
+Button btn3 = new Button();
+btn3.setText("Admin");
+btn3.setOnAction(new EventHandler<ActionEvent>() {
+@Override
+public void handle(ActionEvent event1) {
+
+GridPane grid = new GridPane();
+grid.setAlignment(Pos.CENTER);
+grid.setHgap(10);
+grid.setVgap(10);
+grid.setPadding(new Insets(23, 23, 23, 23));
+
+Label unameLabel = new Label("Username:");
+grid.add(unameLabel, 0, 0);
+
+TextField unameField = new TextField();
+grid.add(unameField, 1, 0);
+
+Label passwordLabel = new Label("Password:");
+grid.add(passwordLabel, 0, 1);
+
+PasswordField passwordField = new PasswordField();
+grid.add(passwordField, 1, 1);
+
+Button loginButton = new Button("Login");
+grid.add(loginButton, 1, 2);
+
+loginButton.setOnAction((ActionEvent event) -> {
+String checkUname = unameField.getText();
+String checkPassword = passwordField.getText();
+if (checkUname.equals(uname) && checkPassword.equals(password)) {
+
+callEBAdminActions(primaryStage);
+
+
+} else {
+System.out.println("Invalid Username/Password!");
+}
+});
+
+
+Scene scene = new Scene(grid, 400, 250);
+primaryStage.setScene(scene);
+primaryStage.setTitle("Electricity Bill User Management");
+primaryStage.show();
+
+}
+
+});
+
+Scene scene = new Scene(root,500,500);  
+root.getChildren().addAll(btn2, btn3);  
+
+primaryStage.setScene(scene);
+primaryStage.show();
+}
+
+private void callEBUserActions(Stage primaryStage) {
+System.out.println("Login Successful!");
+Button b1 = new Button("UserRegistration");
+Button b2 = new Button("NewConnection");
+Button b6 = new Button("Display Payment Details");
+
+GridPane g1 = new GridPane();
+g1.add(b1,0,2);
+g1.add(b2,1,2);
+g1.add(b6,2,2);
+
+b1.setOnAction((ActionEvent e) -> {
+
+try {
+Stage stage = new Stage();
+stage.setTitle("User Registration Form");
+
+GridPane greg = new GridPane();
+greg.setAlignment(Pos.CENTER);
+greg.setHgap(10);
+greg.setVgap(10);
+greg.setPadding(new Insets(25, 25, 25, 25));
+
+Text sceneTitle = new Text("User Registration Form");
+sceneTitle.setFont(Font.font("Tahoma", FontWeight.NORMAL, 20));
+greg.add(sceneTitle, 0, 0, 2, 1);
+
+Label nameLabel = new Label("Name:");
+greg.add(nameLabel, 0, 1);
+
+TextField nameTextField = new TextField();
+greg.add(nameTextField, 1, 1);
+
+Label emailLabel = new Label("Email:");
+greg.add(emailLabel, 0, 2);
+
+TextField emailTextField = new TextField();
+greg.add(emailTextField, 1, 2);
+
+Label pL = new Label("Password:");
+greg.add(pL, 0, 3);
+
+PasswordField p1 = new PasswordField();
+greg.add(p1, 1, 3);
+
+Button submitButton = new Button("Submit");
+HBox hBox = new HBox(10);
+hBox.setAlignment(Pos.BOTTOM_RIGHT);
+hBox.getChildren().add(submitButton);
+greg.add(hBox, 1, 4);
+
+submitButton.setOnAction((ActionEvent e1) -> {
+Label a=new Label("Successfully registered");
+greg.add(a,1,6);
+
+FileWriter fw = null;
+
+
+try{    
+String property = System.getProperty("user.home");
+fw=new FileWriter(property+"/Desktop/"+"userRegistration.txt", true);
+
+fw.write("\n\nUser Details:");  
+fw.write("\nName:"+nameTextField.getText());
+fw.write("\nEmail:"+emailTextField.getText());
+fw.write("\nPassword:"+p1.getText());
+
+}catch(Exception ex){System.out.println(e);}
+finally {
+try {
+fw.close();
+} catch (IOException ioex) {
+System.out.println("Exception occurred when closing a file");
+}
+}
+
+
+});
+
+StackPane secondaryLayout = new StackPane();
+secondaryLayout.getChildren().add(greg);
+
+stage.setScene(new Scene(secondaryLayout, 450, 450));
+stage.show();
+}
+catch (Exception exception) {
+exception.printStackTrace();
+}
+});
+
+b2.setOnAction((ActionEvent enew) -> {
+
+Stage stage = new Stage();
+stage.setTitle("NewConnection");
+
+GridPane gnew = new GridPane();
+Label enew1 = new Label("Name:");
+
+TextField nameField = new TextField();
+
+Label phoneLabel = new Label("Phone Number:");
+
+TextField phoneField = new TextField();
+
+Label serviceTypeLabel = new Label("Service Type:");
+
+ComboBox<String> serviceTypeComboBox = new ComboBox<>();
+serviceTypeComboBox.getItems().addAll("Gas","Electricity","Water","Phone","Internet");
+
+Button snew = new Button("Submit Requisition");
+HBox nameRow = new HBox(enew1, nameField);
+
+HBox phoneRow = new HBox(phoneLabel, phoneField);
+
+HBox serviceTypeRow = new HBox(serviceTypeLabel, serviceTypeComboBox);
+
+snew.setOnAction((ActionEvent e4) -> {
+Label b=new Label("Successfully submitted");
+gnew.add(b,3,8);
+
+FileWriter fw = null;
+try{    
+String property = System.getProperty("user.home");
+fw=new FileWriter(property+"/Desktop/"+"newConnection.txt", true);
+
+fw.write("\n\nNew Connection Details:");  
+fw.write("\nName:"+nameField.getText());
+fw.write("\nPhone Number:"+phoneField.getText());
+fw.write("\nService Type:"+serviceTypeComboBox.getValue());
+
+}catch(Exception ex){System.out.println(ex);}
+finally {
+try {
+fw.close();
+} catch (IOException ioex) {
+System.out.println("Exception occurred when closing a file");
+}
+}
+
+});
+
+VBox root = new VBox(nameRow, phoneRow, serviceTypeRow, snew);
+//                              
+
+StackPane secondaryLayout = new StackPane();
+secondaryLayout.getChildren().add(root);
+
+stage.setScene(new Scene(secondaryLayout, 500, 500));
+stage.show();
+
+});
+
+b6.setOnAction(new EventHandler<ActionEvent>() {
+public void handle(ActionEvent event) {
+try {
+Stage stage = new Stage();
+stage.setTitle("File Contents");
+
+Text secondText = new Text();
+
+//read the file contents
+String fileContentsStr = "Contents from File\n";
+
+try {
+String property = System.getProperty("user.home");
+FileReader fr = new FileReader(property+"/Desktop/"+"payment.txt");
+int i;    
+while((i=fr.read())!=-1) {
+System.out.print((char)i);  
+fileContentsStr += (char)i;
+}
+fileContentsStr+="\n\n";
+fr.close();
+
+secondText.setText(fileContentsStr);
+
+} catch (FileNotFoundException e) {
+// TODO Auto-generated catch block
+e.printStackTrace();
+} catch (IOException e) {
+// TODO Auto-generated catch block
+e.printStackTrace();
+}    
+
+
+StackPane secondaryLayout = new StackPane();
+secondaryLayout.getChildren().add(secondText);
+
+stage.setScene(new Scene(secondaryLayout, 450, 450));
+stage.show();
+// Hide this current window (if this is what you want)
+//((Node)(event.getSource())).getScene().getWindow().hide();
+}
+catch (Exception e) {
+e.printStackTrace();
+}
+}
+});
+
+
+Scene s1 = new Scene(g1, 600, 600);
+primaryStage.setScene(s1);
+primaryStage.setTitle("Electricity Bill User Management");
+primaryStage.show();
+}
+
+private void callEBAdminActions(Stage primaryStage) {
+System.out.println("Login Successful!");
+
+Button b4 = new Button("Display User Details");
+Button b5 = new Button("Display Connection Details");
+Button b3 = new Button("Payment Calculation");
+
+GridPane g1 = new GridPane();
+
+g1.add(b4,0,2);
+g1.add(b5,1,2);
+g1.add(b3,2,2);
+
+b3.setOnAction((ActionEvent epay) -> {
+
+Stage stage = new Stage();
+stage.setTitle("Electricity Bill Payment");  
+
+
+GridPane gpay = new GridPane();
+gpay.setAlignment(Pos.CENTER);
+gpay.setHgap(8);
+gpay.setVgap(8);
+gpay.setPadding(new Insets(25, 25, 25, 25));
+
+Label unitLabel = new Label("Enter number of units:");
+gpay.add(unitLabel, 0, 0);
+
+TextField unitField = new TextField();
+gpay.add(unitField, 1, 0);
+
+Label billLabel = new Label("Bill to pay:");
+gpay.add(billLabel, 0, 1);
+
+TextField billField = new TextField();
+billField.setEditable(false);
+gpay.add(billField, 1, 1);
+
+Button calculateButton = new Button("Calculate");
+gpay.add(calculateButton, 1, 2);
+
+calculateButton.setOnAction(epay1 -> {
+int unit1 = Integer.parseInt(unitField.getText());
+int unit2;
+if (unit == 0) {
+unit2 = unit + unit1;
+billField.setText(String.valueOf(getBill(unit2)));
+} else {
+unit2 = unit1 - unit;
+billField.setText(String.valueOf(getBill(unit2)));
+}
+unit = unit1;
+
+
+FileWriter fw = null;
+try{    
+String property = System.getProperty("user.home");
+fw=new FileWriter(property+"/Desktop/"+"payment.txt", true);
+
+fw.write("\n\nElectricity Bill Payment:");  
+fw.write("\nNumber of units:"+unitField.getText());
+fw.write("\nBill to pay:"+billField.getText());
+
+}catch(Exception ex){System.out.println(ex);}
+finally {
+try {
+fw.close();
+} catch (IOException ioex) {
+System.out.println("Exception occurred when closing a file");
+}
+}
+
+
+});
+
+
+StackPane secondaryLayout = new StackPane();
+secondaryLayout.getChildren().add(gpay);
+
+stage.setScene(new Scene(secondaryLayout, 400, 250));
+stage.show();
+
+
+
+
+
+
+});
+
+
+b4.setOnAction(new EventHandler<ActionEvent>() {
+public void handle(ActionEvent event) {
+try {
+Stage stage = new Stage();
+stage.setTitle("File Contents");
+
+Text secondText = new Text();
+
+//read the file contents
+String fileContentsStr = "Contents from File\n";
+
+try {
+String property = System.getProperty("user.home");
+FileReader fr = new FileReader(property+"/Desktop/"+"userRegistration.txt");
+int i;    
+while((i=fr.read())!=-1) {
+System.out.print((char)i);  
+fileContentsStr += (char)i;
+}
+fileContentsStr+="\n\n";
+fr.close();
+
+secondText.setText(fileContentsStr);
+
+} catch (FileNotFoundException e) {
+// TODO Auto-generated catch block
+e.printStackTrace();
+} catch (IOException e) {
+// TODO Auto-generated catch block
+e.printStackTrace();
+}    
+
+
+StackPane secondaryLayout = new StackPane();
+secondaryLayout.getChildren().add(secondText);
+
+stage.setScene(new Scene(secondaryLayout, 450, 450));
+stage.show();
+// Hide this current window (if this is what you want)
+//((Node)(event.getSource())).getScene().getWindow().hide();
+}
+catch (Exception e) {
+e.printStackTrace();
+}
+}
+});
+
+b5.setOnAction(new EventHandler<ActionEvent>() {
+public void handle(ActionEvent event) {
+try {
+Stage stage = new Stage();
+stage.setTitle("File Contents");
+
+Text secondText = new Text();
+
+//read the file contents
+String fileContentsStr = "Contents from File\n";
+
+try {
+String property = System.getProperty("user.home");
+FileReader fr = new FileReader(property+"/Desktop/"+"newConnection.txt");
+int i;    
+while((i=fr.read())!=-1) {
+System.out.print((char)i);  
+fileContentsStr += (char)i;
+}
+fileContentsStr+="\n\n";
+fr.close();
+
+secondText.setText(fileContentsStr);
+
+} catch (FileNotFoundException e) {
+// TODO Auto-generated catch block
+e.printStackTrace();
+} catch (IOException e) {
+// TODO Auto-generated catch block
+e.printStackTrace();
+}    
+
+
+StackPane secondaryLayout = new StackPane();
+secondaryLayout.getChildren().add(secondText);
+
+stage.setScene(new Scene(secondaryLayout, 450, 450));
+stage.show();
+// Hide this current window (if this is what you want)
+//((Node)(event.getSource())).getScene().getWindow().hide();
+}
+catch (Exception e) {
+e.printStackTrace();
+}
+}
+});
+
+
+Scene s1 = new Scene(g1, 600, 600);
+primaryStage.setScene(s1);
+primaryStage.setTitle("Electricity Bill User Management");
+primaryStage.show();
+}
+
+public static void main(String[] args) {
+launch(args);
+
+
+}
+
+private double getBill(long unit2) {
+if (unit2 < 100) {
+billToPay = unit2 * 1.20;
+} else if (unit2 < 300) {
+billToPay = 100 * 1.20 + (unit2 - 100) * 2;
+} else if (unit2 > 300) {
+billToPay = 100 * 1.20 + 200 * 2 + (unit2 - 300) * 3;
+}
+return billToPay;
+}
+}
